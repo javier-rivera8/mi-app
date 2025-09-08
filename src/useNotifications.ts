@@ -13,7 +13,7 @@ Notifications.setNotificationHandler({
   })
 });
 
-const SERVER_URL = "http://192.168.0.59:3000"; // IP local para conectar desde dispositivos móviles
+const SERVER_URL = "http://192.168.0.7:3000"; // IP local para conectar desde dispositivos móviles
 const DEFAULT_TOPIC = "general"; // Tópico por defecto
 
 export function useNotifications() {

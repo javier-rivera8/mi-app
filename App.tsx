@@ -1,7 +1,7 @@
 import { Text, View, Button, ScrollView, StyleSheet, Alert } from "react-native";
 import { useNotifications } from "./src/useNotifications";
 
-const SERVER_URL = "http://192.168.0.59:3000";
+const SERVER_URL = "http://192.168.0.7:3000";
 
 export default function App() {
   const { fcmToken, isSubscribed, lastNotification, subscribeToTopic, unsubscribeFromTopic } = useNotifications();
