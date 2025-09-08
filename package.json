@@ -17,6 +17,7 @@
     "expo-firebase-core": "^6.0.0",
     "expo-notifications": "^0.31.4",
     "expo-status-bar": "~2.2.3",
+    "expo-updates": "^0.28.17",
     "firebase": "^12.2.1",
     "node-fetch": "^2.7.0",
     "react": "19.0.0",
