@@ -12,6 +12,7 @@
     "@react-native-firebase/app": "^23.3.0",
     "@react-native-firebase/messaging": "^23.3.0",
     "expo": "~53.0.22",
+    "expo-constants": "^17.1.0",
     "expo-dev-client": "~5.2.4",
     "expo-device": "^7.1.4",
     "expo-notifications": "^0.31.4",

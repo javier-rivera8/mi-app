@@ -6,16 +6,24 @@
   "build": {
     "development": {
       "developmentClient": true,
-      "distribution": "internal"
-    },
-    "preview": {
       "distribution": "internal",
       "env": {
         "GOOGLE_SERVICES_JSON": "./google-services.json"
       }
     },
+    "preview": {
+      "distribution": "internal",
+      "env": {
+        "GOOGLE_SERVICES_JSON": "./google-services.json",
+        "NODE_ENV": "preview"
+      },
+      "channel": "preview"
+    },
     "production": {
-      "autoIncrement": true
+      "autoIncrement": true,
+      "env": {
+        "GOOGLE_SERVICES_JSON": "./google-services.json"
+      }
     }
   },
   "submit": {

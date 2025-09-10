@@ -4,32 +4,53 @@ import { useNotifications } from "./src/useNotifications";
 const SERVER_URL = "http://192.168.0.7:3000";
 
 export default function App() {
-  const { fcmToken, isSubscribed, lastNotification, subscribeToTopic, unsubscribeFromTopic } = useNotifications();
+  const { 
+    fcmToken, 
+    isSubscribed, 
+    lastNotification, 
+    debugInfo, 
+    serverUrl, 
+    subscribeToTopic, 
+    unsubscribeFromTopic, 
+    testConnection 
+  } = useNotifications();
 
   const sendTestNotification = async () => {
+    console.log('[DEBUG] Enviando notificación de prueba...');
     try {
-      const response = await fetch(`${SERVER_URL}/send-to-topic`, {
+      const requestBody = {
+        topic: 'general',
+        title: 'Notificación de Prueba',
+        body: '¡Esta es una notificación enviada al tópico general!',
+        data: { tipo: 'prueba', timestamp: new Date().toISOString() }
+      };
+      
+      console.log('[DEBUG] Request body:', requestBody);
+      console.log('[DEBUG] Server URL:', serverUrl);
+      
+      const response = await fetch(`${serverUrl}/send-to-topic`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          topic: 'general',
-          title: 'Notificación de Prueba',
-          body: '¡Esta es una notificación enviada al tópico general!',
-          data: { tipo: 'prueba', timestamp: new Date().toISOString() }
-        }),
+        body: JSON.stringify(requestBody),
       });
       
+      console.log('[DEBUG] Response status:', response.status);
+      console.log('[DEBUG] Response headers:', Object.fromEntries(response.headers.entries()));
+      
       const result = await response.json();
+      console.log('[DEBUG] Response body:', result);
+      
       if (result.success) {
-        Alert.alert('Éxito', 'Notificación enviada al tópico correctamente');
+        Alert.alert('Éxito', `Notificación enviada al tópico correctamente. ID: ${result.id}`);
       } else {
         Alert.alert('Error', result.error || 'No se pudo enviar la notificación');
       }
     } catch (error) {
-      Alert.alert('Error', 'Error de conexión con el servidor');
-      console.error('Error:', error);
+      console.error('[DEBUG] Error completo:', error);
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      Alert.alert('Error', `Error de conexión con el servidor: ${errorMessage}`);
     }
   };
 
@@ -39,13 +60,27 @@ export default function App() {
         <Text style={styles.title}>Sistema de Notificaciones por Tópicos</Text>
         
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Estado de Conexión:</Text>
+          <Text style={styles.sectionTitle}>🌐 Información de Conexión:</Text>
           <Text style={styles.status}>
-            {fcmToken ? '✅ Conectado' : '⏳ Conectando...'}
+            📡 Servidor: {serverUrl}
           </Text>
           <Text style={styles.status}>
-            {isSubscribed ? '✅ Suscrito al tópico "general"' : '❌ No suscrito'}
+            🔗 Estado: {fcmToken ? '✅ Conectado' : '⏳ Conectando...'}
           </Text>
+          <Text style={styles.status}>
+            📢 Tópico: {isSubscribed ? '✅ Suscrito a "general"' : '❌ No suscrito'}
+          </Text>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>🐛 Información de Debug:</Text>
+          {Object.keys(debugInfo).length > 0 ? (
+            <Text selectable style={styles.debugInfo}>
+              {JSON.stringify(debugInfo, null, 2)}
+            </Text>
+          ) : (
+            <Text style={styles.status}>Sin información de debug disponible</Text>
+          )}
         </View>
 
         <View style={styles.section}>
@@ -87,6 +122,13 @@ export default function App() {
             title="🔔 Enviar Notificación de Prueba"
             onPress={sendTestNotification}
             disabled={!isSubscribed}
+          />
+          
+          <View style={styles.buttonSpacer} />
+          
+          <Button
+            title="🔍 Probar Conexión al Servidor"
+            onPress={testConnection}
           />
           
           <View style={styles.buttonSpacer} />
@@ -211,5 +253,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     lineHeight: 20,
+  },
+  debugInfo: {
+    fontSize: 10,
+    color: '#555',
+    backgroundColor: '#f0f0f0',
+    padding: 8,
+    borderRadius: 4,
+    fontFamily: 'monospace',
+    maxHeight: 200,
   },
 });
